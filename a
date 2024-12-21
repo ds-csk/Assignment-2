@@ -1,0 +1,59 @@
+Devansh Singh
+102103686
+3CO33
+
+import numpy as np
+import pandas as pd
+## QUES 1
+customer=pd.read_csv("/content/AWCustomers.csv")
+customer.head()
+customer=customer.drop("Title", axis=1)
+customer = customer.drop("Suffix", axis=1)
+customer = customer.drop("AddressLine2", axis=1)
+customer = customer.drop("LastUpdated", axis=1)
+customer = customer.drop("Education", axis=1)
+updated_customer=customer
+updated_customer.head()
+updated_customer.describe()
+
+updated_customer.describe(include='all')
+updated_customer=updated_customer.drop("PhoneNumber", axis=1)
+updated_customer.tail()
+updated_customer=updated_customer.drop(["MiddleName", "LastName", "FirstName"], axis=1)
+updated_customer.head()
+updated_customer.to_csv("AWUpdated.csv")
+## Ques 2
+pd.isna(updated_customer).head()
+updated_customer.dropna()
+updated_customer['Gender'] = updated_customer['Gender'].replace({'M': 1, 'F': 0})
+updated_customer.head()
+updated_customer['MaritalStatus'] = updated_customer['MaritalStatus'].replace({'M': 1, 'S': 0})
+updated_customer.head()
+
+updated_customer=updated_customer.drop("CountryRegionName", axis=1)
+updated_customer=updated_customer.drop("AddressLine1", axis=1)
+updated_customer.head()
+updated_customer=updated_customer.drop("PostalCode", axis=1)
+updated_customer.head()
+encoded_data=pd.get_dummies(updated_customer)
+encoded_data.head()
+## Ques 3
+def jaccard_similarity(set1, set2):
+    set1 = set(set1)
+    set2 = set(set2)
+
+    intersection = len(set1.intersection(set2))
+    union = len(set1.union(set2))
+
+    return intersection / union if union != 0 else 0  
+set1 = encoded_data.MaritalStatus
+set2 = encoded_data.NumberCarsOwned
+similarity = jaccard_similarity(set1, set2)
+print("Jaccard Similarity:", similarity)
+
+from numpy.linalg import norm
+A = encoded_data.NumberCarsOwned
+B = encoded_data.TotalChildren
+cosine = np.dot(A,B)/(norm(A)*norm(B))
+print("Cosine Similarity:", cosine)
+encoded_data.corr()
